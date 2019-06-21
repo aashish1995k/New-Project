@@ -1,0 +1,302 @@
+import { Component, OnInit, Input } from '@angular/core';
+import * as $ from 'jquery';
+import * as moment from 'moment';
+import 'fullcalendar';
+import bootstrapPlugin from '@fullcalendar/bootstrap';
+@Component({
+  selector: 'app-full-calendar',
+  templateUrl: './full-calendar.component.html',
+  styleUrls: ['./full-calendar.component.css']
+})
+export class FullCalendarComponent implements OnInit {
+  eventData: any;
+  newEventData: any;
+  defaultConfigurations: any;
+  selectedEvent: string = 'ALL';
+  currentDate: Date = new Date();
+  chargeOffDate: Date;  
+  rslChargeOffDate: Date;
+  warningDate: Date;
+  @Input()
+  set configurations(config: any) {
+    if (config) {
+      this.defaultConfigurations = config;
+    }
+  }
+
+  constructor() {
+    this.chargeOffDate = new Date(this.currentDate.setMonth(this.currentDate.getMonth() + 2));
+    this.rslChargeOffDate = new Date();
+    this.rslChargeOffDate.setMonth(this.rslChargeOffDate.getMonth() + 1);
+    this.warningDate = new Date(this.rslChargeOffDate);
+    this.warningDate.setDate(this.rslChargeOffDate.getDate() - 1);   
+
+    this.eventData = [
+      {
+        type: 'PTP',
+        title: 'fas fa-phone',
+        date: '2019-05-01',
+        data: 'Promised to pay $800 on 2019-07-16'
+      },
+      { 
+        type: 'LETTERS',
+        title: 'fas fa-envelope',
+        date: '2019-05-02',
+        data: 'Promised to pay $800 on 2019-07-16'
+      },
+      {
+        type: 'PAYMENTSPOSTED',
+        title: 'fas fa-dollar-sign',
+        date: '2019-05-17',
+        data: '175'
+      },
+      {
+        type: 'LETTERS',
+        title: 'fas fa-envelope',
+        date: '2019-05-22',
+        data: 'Letter sent on 2019-04-22'
+      },
+      {
+        type: 'PTP',
+        title: 'fas fa-phone',
+        date: '2019-06-06',
+        data: 'Promised to pay $800 on 2019-07-16'
+      },
+      {
+        type: 'PAYMENTSRETURNED',
+        title: 'fas fa-dollar-sign',
+        date: '2019-06-09',
+        data: '-17'
+      },
+      {
+        type: 'PTP',
+        title: 'fas fa-phone',
+        date: '2019-06-10',
+        data: 'Promised to pay $800 on 2019-07-16'
+      },
+      {
+        type: 'PAYMENTSRETURNED',
+        title: 'fas fa-dollar-sign',
+        date: '2019-06-14', 
+        data: '-75'
+      },
+      {
+        type: 'LETTERS',
+        title: 'fas fa-envelope',
+        date: '2019-06-15',
+        data: 'Letter sent on 2019-05-14'
+      },
+      {
+        type: 'PTP',
+        title: 'fas fa-phone',
+        date: '2019-06-17',
+        data: 'Promised to pay $800 on 2019-07-16'
+      },
+      {
+        type: 'LETTERS',
+        title: 'fas fa-envelope',
+        date: '2019-06-18',
+        data: 'Letter sent on 2019-05-25'
+      },
+      {
+        type: 'PAYMENTSPOSTED',
+        title: 'fas fa-dollar-sign',
+        date: '2019-06-19',
+        data: '175'
+      },
+      {
+        type: 'PAYMENTSPOSTED',
+        title: 'fas fa-dollar-sign',
+        date: '2019-06-20',
+        data: '175'
+      },
+      {
+        type: 'PTP',
+        title: 'fas fa-phone',
+        date: '2019-06-21',
+        data: 'Promised to pay $800 on 2019-07-16'
+      },
+      {
+        type: 'PAYMENTSRETURNED',
+        title: 'fas fa-dollar-sign',
+        date: '2019-06-22',
+        data: '-175'
+      },
+      {
+        type: 'PTP',
+        title: 'fas fa-phone',
+        date: '2019-06-23',
+        data: 'Promised to pay $800 on 2019-07-16'
+      },
+      {
+        type: 'PAYMENTSRETURNED',
+        title: 'fas fa-dollar-sign',
+        date: '2019-06-28',
+        data: '-175'
+      },
+      {
+        type: 'PTP',
+        title: 'fas fa-phone',
+        date: '2019-06-29',
+        data: 'Promised to pay $800 on 2019-07-16'
+      },
+      {
+        type: 'PAYMENTSPOSTED',
+        title: 'fas fa-dollar-sign',
+        date: '2019-06-30',
+        data: '175',
+        column: 1
+      },
+      {
+        type: 'PTP',        
+        date: '2019-06-30',
+        data: 'Promised to pay $800 on 2019-07-16',
+        imageurl: 'assets/icons/telephone.png',
+        column: 2
+      },
+      {
+        type: 'ARC',
+        title: '',
+        date: '2019-06-24',
+        data: 'AB CF'
+      },
+      {
+        type: 'ARC',
+        title: '',
+        date: '2019-06-25',
+        data: 'AB CD'
+      },
+      {
+        type: 'CHARGEOFF',
+        title: 'fas fa-dollar-sign',
+        date: this.chargeOffDate,
+        data: 'CHARGEOFF'
+      },
+      {
+        type: 'RSLCHAREGEOFF',
+        title: 'fas fa-dollar-sign',
+        date: this.rslChargeOffDate,
+        data: 'RSL C/O'
+      },
+      {
+        type: 'ARC',
+        title: 'fas fa-dollar-sign',
+        date: this.warningDate,
+        data: '$8PM ET'
+      }
+    ];
+
+    this.newEventData = [...this.eventData];
+
+    this.defaultConfigurations = {
+
+      dayClick: (date, jsEvent, activeView) => {
+        this.dayClick(date, jsEvent, activeView);
+      },
+
+      eventDragStart: (timeSheetEntry, jsEvent, ui, activeView) => {
+        this.eventDragStart(
+          timeSheetEntry, jsEvent, ui, activeView
+        );
+      },
+
+      eventDragStop: (timeSheetEntry, jsEvent, ui, activeView) => {
+        this.eventDragStop(
+          timeSheetEntry, jsEvent, ui, activeView
+        );
+      },
+
+      plugins: [bootstrapPlugin],
+      editable: true,
+      titleFormat: 'MMM D YYYY',
+      timeZone: 'UTC',
+      themeSystem: 'bootstrap4',
+      header: {
+        left: 'prev,next',
+        center: 'title',
+        right: 'month,listMonth'
+      },
+      validRange: {
+        start: new Date().setMonth(new Date().getMonth() - 3),//start date here
+        end: new Date().setMonth(new Date().getMonth() + 3) //end date here
+      },
+      weekNumbers: false,
+      buttonText: {
+        today: 'Today',
+        month: 'Month',
+        week: 'Week',
+        day: 'Day',
+        list: 'List'
+      },
+      views: {
+        multiColAgendaDay: {
+            type: 'multiColAgenda',
+            duration: { days: 1 },
+            numColumns: 2,
+           // columnHeaders: ['First column', 'Second column']
+        }
+      },
+      allDaySlot: true,
+      firstDay: 1,
+      selectable: true,
+      selectHelper: true,
+      eventLimit: true,
+      events: this.newEventData,
+      eventRender: function (event, element) {
+        if(event.imageurl)
+        element.find("div.fc-content").prepend("<img src='"+event.imageurl+"' width='16' height='16'>");
+        element.attr('href', 'javascript:void(0);');
+      },
+      dayRender: function (date, cell) {
+        console.log('date ', date);
+        console.log('this.chargeOffDate ', this.chargeOffDate);
+        if (date.isSame(this.chargeOffDate)) {
+           cell.css("background-color","red");
+        }
+      }
+    };
+  }
+
+  ngOnInit() {
+    $('#full-calendar').fullCalendar(
+      this.defaultConfigurations
+    );
+  }
+
+  dayClick(date, jsEvent, activeView) {
+    console.log('day click');
+  }
+
+  eventDragStart(timeSheetEntry, jsEvent, ui, activeView) {
+    console.log('event drag start');
+  }
+
+  eventDragStop(timeSheetEntry, jsEvent, ui, activeView) {
+    console.log('event drag end');
+  }
+
+  eventFilter(value: string) {
+    console.log(value);
+    let selectedEventText = this.selectedEvent;
+    let filteredData = [];
+      selectedEventText =  $('#type_filter :selected').text();
+      filteredData = this.eventData.filter((data => { 
+        console.log(data);
+        console.log(selectedEventText === data.type.toString());
+        return selectedEventText === data.type.toString() 
+      }));
+        console.log(filteredData);
+       // $('#full-calendar').fullCalendar('rerenderEvents');
+        $('#full-calendar').fullCalendar('removeEventSource', this.newEventData );
+        $('#full-calendar').fullCalendar('refetchEvents');
+
+        //attach the new eventSources
+        $('#full-calendar').fullCalendar('addEventSource', filteredData);
+        $('#full-calendar').fullCalendar('refetchEvents');
+
+        //currentData = newData;
+        this.newEventData.length = 0;
+        this.newEventData = filteredData;
+        console.log('newEventData ' , this.newEventData);
+  } 
+}
