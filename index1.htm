@@ -1,0 +1,521 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="shortcut icon" type="image/x-icon" href="https://static.codepen.io/assets/favicon/favicon-aec34940fbc1a6e787974dcd360f2c6b63348d4b1f4e06c77743096d55480f33.ico" />
+<link rel="mask-icon" type="" href="https://static.codepen.io/assets/favicon/logo-pin-8f3771b1072e3c38bd662872f6b673a722f4b3ca2421637d5596661b4e2132cc.svg" color="#111" />
+<title>CodePen - New NUI Sidebar</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
+<link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/material-design-icons/3.0.1/iconfont/material-icons.min.css'>
+<style>
+      *, *::before, *::after {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Open Sans", Helvetica, sans-serif;
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+.nui-shell {
+  position: relative;
+  padding-top: 64px;
+  padding-left: 250px;
+}
+
+.nui-shell--sidebar-collapsed {
+  padding-left: 60px;
+}
+
+.nui-shell__header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  display: flex;
+  flex-flow: column;
+  width: 100%;
+  height: 64px;
+  background-color: #2e4051;
+  color: #fff;
+}
+
+.nui-shell__header-row {
+  display: flex;
+}
+
+.nui-shell__header-section {
+  display: inline-flex;
+  flex: 1 1 auto;
+  align-items: center;
+}
+
+.nui-shell__header-section--branding {
+  flex-grow: 0;
+}
+
+.nui-shell__header-section--align-end {
+  justify-content: flex-end;
+}
+
+.nui-shell__header-title {
+  padding-left: 20px;
+  font-size: 20px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.nui-shell__sidebar {
+  position: fixed;
+  left: 0;
+  display: flex;
+  flex-flow: column;
+  width: 250px;
+  height: calc(100vh - 64px);
+  padding-bottom: 36px;
+  background-color: #2e4051;
+}
+.nui-shell--sidebar-collapsed .nui-shell__sidebar {
+  width: 60px;
+}
+
+.nui-shell__sidebar-filter {
+  position: relative;
+  flex-shrink: 0;
+  height: 35px;
+  margin: 20px;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 12px;
+  overflow: hidden;
+  transition: 150ms ease height;
+}
+.nui-shell--sidebar-collapsed .nui-shell__sidebar-filter {
+  height: 0;
+  margin: 0;
+}
+
+.nui-shell__sidebar-filter-icon {
+  position: absolute;
+  top: 50%;
+  left: 10px;
+  font-size: 18px;
+  -webkit-transform: translateY(-50%);
+          transform: translateY(-50%);
+  color: inherit;
+}
+
+.nui-shell__sidebar-filter-input {
+  width: 100%;
+  height: 35px;
+  padding-left: 35px;
+  background: #243340;
+  border: solid 1px #19252d;
+}
+
+.nui-shell__sidebar-toggle {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  display: inline-flex;
+  justify-content: flex-end;
+  width: 100%;
+  height: 36px;
+  padding: 0 10px;
+  border: 0;
+  border-top: solid 1px #19252d;
+  background: #455564;
+  color: #fff;
+}
+.nui-shell--sidebar-collapsed .nui-shell__sidebar-toggle {
+  justify-content: center;
+}
+
+.nui-shell__sidebar-nav {
+  overflow: scroll;
+}
+.nui-shell--sidebar-collapsed .nui-shell__sidebar-nav {
+  overflow: visible;
+}
+
+.nui-shell__sidebar-nav-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.nui-shell__sidebar-nav-list .nui-shell__sidebar-nav-list {
+  display: none;
+  background-color: #243340;
+}
+.nui-shell__sidebar-nav-list .nui-shell__sidebar-nav-list .nui-shell__sidebar-nav-link {
+  padding-left: 65px;
+}
+.nui-shell--sidebar-collapsed .nui-shell__sidebar-nav-list .nui-shell__sidebar-nav-list .nui-shell__sidebar-nav-link {
+  padding: 0 20px;
+}
+
+.nui-shell__sidebar-nav-item {
+  position: relative;
+}
+
+.nui-shell__sidebar-nav-item--is-expanded {
+  width: 250px;
+}
+.nui-shell__sidebar-nav-item--is-expanded .nui-shell__sidebar-nav-list {
+  display: block;
+}
+.nui-shell--sidebar-collapsed .nui-shell__sidebar-nav-item--is-expanded .nui-shell__sidebar-nav-list {
+  position: absolute;
+  top: 50px;
+  left: 60px;
+  width: 190px;
+}
+.nui-shell--sidebar-collapsed .nui-shell__sidebar-nav-item--is-expanded > .nui-shell__sidebar-nav-link {
+  background-color: #007a98;
+}
+
+.nui-shell__sidebar-nav-link {
+  display: flex;
+  align-items: center;
+  height: 50px;
+  padding: 0 20px;
+  color: #fff;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.nui-shell__sidebar-nav-link:hover {
+  background-color: #007a98;
+}
+
+.nui-shell__sidebar-nav-text {
+  overflow: hidden;
+}
+
+.nui-shell__sidebar-nav-icon {
+  margin-right: 20px;
+  font-size: 24px;
+}
+
+.nui-shell__sidebar-nav-expand-icon {
+  margin-left: auto;
+  transition: 150ms ease transform;
+  -webkit-transform: rotate(0deg);
+          transform: rotate(0deg);
+}
+.nui-shell__sidebar-nav-item--is-expanded .nui-shell__sidebar-nav-expand-icon {
+  -webkit-transform: rotate(180deg);
+          transform: rotate(180deg);
+}
+.nui-shell--sidebar-collapsed .nui-shell__sidebar-nav-expand-icon {
+  display: none;
+}
+
+.nui-product-bar {
+  width: 100%;
+  height: 4px;
+  background-image: linear-gradient(90deg, #54b948 0%, #00a77e 89%);
+}
+
+.nui-app-logo {
+  display: inline-flex;
+}
+
+.nui-app-logo__logo-wrap {
+  display: flex;
+  flex-flow: column;
+  width: 60px;
+  height: 60px;
+  background-color: #243340;
+}
+
+.nui-app-logo__logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-grow: 1;
+  color: #fff;
+  font-size: 24px;
+  line-height: 1;
+}
+.nui-app-logo__logo > * {
+  width: 100%;
+}
+
+.nui-action-links__list {
+  display: flex;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.nui-action-link {
+  width: 60px;
+  height: 60px;
+  border: 0;
+  background: transparent;
+  color: currentColor;
+}
+
+    </style>
+<script>
+  window.console = window.console || function(t) {};
+</script>
+<script>
+  if (document.location.search.match(/type=embed/gi)) {
+    window.parent.postMessage("resize", "*");
+  }
+</script>
+</head>
+<body translate="no">
+<div class="nui-shell">
+<header class="nui-shell__header">
+<div class="nui-shell__header-row">
+<div class="nui-product-bar"></div>
+</div>
+<div class="nui-shell__header-row">
+<div class="nui-shell__header-section nui-shell__header-section--branding">
+<div class="nui-app-logo">
+<div class="nui-app-logo__logo-wrap">
+<div class="nui-app-logo__logo">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 375 375">
+<g fill="none" fill-rule="evenodd">
+<path fill="#51B046" d="M0 374.446h374.367V0H0" />
+<path fill="#FFF" d="M214.725 145.85l18.514 17.436c-.5.223-1.09.502-1.77.848-1.07.55-2.35 1.3-3.88 2.357-3.05 2.11-7.03 5.45-12.12 10.95l-36.17 38.28c-6.21 6.56-12.51 11.75-18.37 14.49l-18.52-17.43c.5-.23 1.09-.5 1.76-.86 1.07-.533 2.35-1.29 3.88-2.35 3.04-2.103 7.03-5.44 12.11-10.933l36.172-38.23c6.21-6.545 12.52-11.8 18.38-14.545" />
+<path fill="#FFF" d="M143.363 238.692c8.188 0 15.703-1.627 20.807-4.27 2.33-1.22 5.658-3.32 8.527-5.54 2.857-2.23 6.888-5.693 10.314-9.332l36.22-38.173c9.13-9.622 14.63-12.59 17.95-13.758l18.58 17.59c-3.87 4.14-50.1 53.38-50.1 53.38-3.16 3.4-6.48 6.68-8.73 8.75-2.164 2.002-5.88 4.972-7.794 6.38-10.872 7.97-25.4 14.43-44.96 14.43-44.31 0-80.155-36.07-80.155-77.608 0-51.53 40.26-81.423 76.933-81.423 11.23-.33 20.253 1.553 27.376 3.976 6.594 2.243 11.57 4.95 15.177 6.794-4.26 2.74-8.39 6.46-15.203 13.74l-7.423 7.98c-1.712-.658-9.3-3.297-19.045-3.007-23.52.695-49.253 19.773-48.327 51.05.866 29.253 24.98 49.03 49.87 49.03" />
+<path fill="#FFF" d="M211.958 142.84c-2.34 1.214-5.667 3.31-8.536 5.54-2.855 2.22-6.888 5.688-10.316 9.322l-36.208 38.178c-9.135 9.62-14.626 12.584-17.953 13.756l-18.58-17.586c3.883-4.15 50.11-53.387 50.11-53.387 3.158-3.4 6.476-6.675 8.73-8.762 2.166-2 5.88-4.96 7.802-6.37 10.86-7.96 25.407-14.43 44.963-14.43 44.316 0 80.144 36.07 80.144 77.6 0 51.54-40.253 81.428-76.93 81.428-11.232.337-20.256-1.554-27.38-3.98-6.605-2.245-11.596-4.96-15.2-6.805 4.508-3.035 8.367-6.38 15.23-13.706l7.425-7.985c1.71.647 9.29 3.294 19.03 3.01 23.52-.7 49.26-19.784 48.33-51.065-.87-29.246-25-49.02-49.88-49.02-8.197 0-15.69 1.62-20.797 4.274" />
+</g>
+</svg>
+</div>
+</div>
+</div>
+<div class="nui-app-logo">
+<div class="nui-app-logo__logo-wrap">
+<div class="nui-app-logo__logo">
+Vi
+</div>
+</div>
+</div>
+</div>
+<div class="nui-shell__header-section">
+<span class="nui-shell__header-title">Page Title</span>
+</div>
+<div class="nui-shell__header-section nui-shell__header-section--align-end">
+<nav class="nui-action-links">
+<ul class="nui-action-links__list">
+<li class="nui-action-links__item">
+<button class="nui-action-link">
+<span class="nui-icon material-icons">account_circle</span>
+</button>
+</li>
+<li class="nui-action-links__item">
+<button class="nui-action-link">
+<span class="nui-icon material-icons">apps</span>
+</button>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</header>
+<aside class="nui-shell__sidebar">
+<div class="nui-shell__sidebar-filter">
+<span class="nui-shell__sidebar-filter-icon material-icons">filter_list</span>
+<input type="text" class="nui-shell__sidebar-filter-input" placeholder="Filter menu">
+</div>
+<nav class="nui-shell__sidebar-nav">
+<ul class="nui-shell__sidebar-nav-list">
+<li class="nui-shell__sidebar-nav-item">
+<a href="#" class="nui-shell__sidebar-nav-link">
+<span class="material-icons nui-shell__sidebar-nav-icon">dashboard</span>
+<span class="nui-shell__sidebar-nav-text">Dashboard</span>
+<span class="nui-shell__sidebar-nav-expand-icon material-icons">keyboard_arrow_down</span>
+</a>
+<ul class="nui-shell__sidebar-nav-list">
+<li class="nui-shell__sidebar-nav-item">
+<a href="#" class="nui-shell__sidebar-nav-link">
+Sub Nav Link
+</a>
+</li>
+<li class="nui-shell__sidebar-nav-item">
+<a href="#" class="nui-shell__sidebar-nav-link">
+Sub Nav Link
+</a>
+</li>
+<li class="nui-shell__sidebar-nav-item">
+<a href="#" class="nui-shell__sidebar-nav-link">
+Sub Nav Link
+</a>
+</li>
+<li class="nui-shell__sidebar-nav-item">
+<a href="#" class="nui-shell__sidebar-nav-link">
+Sub Nav Link
+</a>
+</li>
+</ul>
+</li>
+<li class="nui-shell__sidebar-nav-item">
+<a href="#" class="nui-shell__sidebar-nav-link">
+<span class="material-icons nui-shell__sidebar-nav-icon">dashboard</span>
+<span class="nui-shell__sidebar-nav-text">Dashboard</span>
+<span class="nui-shell__sidebar-nav-expand-icon material-icons">keyboard_arrow_down</span>
+</a>
+<ul class="nui-shell__sidebar-nav-list">
+<li class="nui-shell__sidebar-nav-item">
+<a href="#" class="nui-shell__sidebar-nav-link">
+Sub Nav Link
+</a>
+</li>
+<li class="nui-shell__sidebar-nav-item">
+<a href="#" class="nui-shell__sidebar-nav-link">
+Sub Nav Link
+</a>
+</li>
+<li class="nui-shell__sidebar-nav-item">
+<a href="#" class="nui-shell__sidebar-nav-link">
+Sub Nav Link
+</a>
+</li>
+<li class="nui-shell__sidebar-nav-item">
+<a href="#" class="nui-shell__sidebar-nav-link">
+Sub Nav Link
+</a>
+</li>
+</ul>
+</li>
+<li class="nui-shell__sidebar-nav-item">
+<a href="#" class="nui-shell__sidebar-nav-link">
+<span class="material-icons nui-shell__sidebar-nav-icon">dashboard</span>
+<span class="nui-shell__sidebar-nav-text">Dashboard</span>
+<span class="nui-shell__sidebar-nav-expand-icon material-icons">keyboard_arrow_down</span>
+</a>
+<ul class="nui-shell__sidebar-nav-list">
+<li class="nui-shell__sidebar-nav-item">
+<a href="#" class="nui-shell__sidebar-nav-link">
+ Sub Nav Link
+</a>
+</li>
+<li class="nui-shell__sidebar-nav-item">
+<a href="#" class="nui-shell__sidebar-nav-link">
+Sub Nav Link
+</a>
+</li>
+<li class="nui-shell__sidebar-nav-item">
+<a href="#" class="nui-shell__sidebar-nav-link">
+Sub Nav Link
+</a>
+</li>
+<li class="nui-shell__sidebar-nav-item">
+<a href="#" class="nui-shell__sidebar-nav-link">
+Sub Nav Link
+</a>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+<button class="nui-shell__sidebar-toggle">
+<span class="material-icons">chevron_left</span>
+</button>
+</aside>
+<main class="nui-shell__content"></main>
+</div>
+<script src="https://static.codepen.io/assets/common/stopExecutionOnTimeout-de7e2ef6bfefd24b79a3f68b414b87b8db5b08439cac3f1012092b2290c719cd.js"></script>
+<script id="rendered-js">
+      (() => {
+  class NUIShell {
+    constructor(el, options = {}) {
+      this.el_ = el;
+      this.links_ = null;
+      this.toggle_ = null;
+      this.options_ = options;
+      this.collapsed_ = options.collapsed || false;
+
+      this.CssClasses_ = {
+        SIDEBAR_COLLAPSED: "nui-shell--sidebar-collapsed",
+        SIDEBAR_NAV_LINK: "nui-shell__sidebar-nav-link",
+        SIDEBAR_TOGGLE: "nui-shell__sidebar-toggle",
+        SIDEBAR_NAV_ITEM_EXPANDED: "nui-shell__sidebar-nav-item--is-expanded" };
+
+
+      this.init();
+    }
+
+    setCollapsed(collapsed) {
+      if (collapsed) {
+        this.el_.classList.add(this.CssClasses_.SIDEBAR_COLLAPSED);
+      } else {
+        this.el_.classList.remove(this.CssClasses_.SIDEBAR_COLLAPSED);
+      }
+      this.collapsed_ = collapsed;
+    }
+
+    isCollapsed() {
+      return this.collapsed_;
+    }
+
+    getLinks() {
+      if (!this.links_) {
+        const links = this.el_.querySelectorAll(
+        `.${this.CssClasses_.SIDEBAR_NAV_LINK}`);
+
+        this.links_ = links;
+      }
+      return this.links_;
+    }
+
+    getToggle() {
+      if (!this.toggle_) {
+        const toggle = this.el_.querySelector(
+        `.${this.CssClasses_.SIDEBAR_TOGGLE}`);
+
+        this.toggle_ = toggle;
+      }
+      return this.toggle_;
+    }
+
+    clearActiveLinks() {
+      this.getLinks().forEach(link => {
+        const parent = link.parentElement;
+        parent.classList.remove(this.CssClasses_.SIDEBAR_NAV_ITEM_EXPANDED);
+      });
+    }
+
+    toggleActiveLinks(activeLink) {
+      this.getLinks().forEach(link => {
+        const parent = link.parentElement;
+        if (link === activeLink) {
+          parent.classList.toggle(this.CssClasses_.SIDEBAR_NAV_ITEM_EXPANDED);
+        } else if (this.isCollapsed()) {
+          parent.classList.remove(this.CssClasses_.SIDEBAR_NAV_ITEM_EXPANDED);
+        }
+      });
+    }
+
+    init() {
+      const toggle = this.getToggle();
+      const links = this.getLinks();
+
+      this.setCollapsed(this.collapsed_);
+
+      toggle.addEventListener("click", event => {
+        this.clearActiveLinks();
+        this.setCollapsed(!this.collapsed_);
+      });
+
+      links.forEach(link => {
+        link.addEventListener("click", event => {
+          this.toggleActiveLinks(link);
+        });
+      });
+    }}
+
+
+  const shell = new NUIShell(document.querySelector(".nui-shell"), {
+    collapsed: true });
+
+})();
+      //# sourceURL=pen.js
+    </script>
+</body>
+</html>
