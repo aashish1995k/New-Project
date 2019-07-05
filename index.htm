@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        .container {
+            display: flex;
+            width: 100%;
+            max-width: 100%;     
+            height: 100%;
+            max-height: 100%
+        }
+
+        .sidebar {
+            background-color: blueviolet;
+            min-height: 100% !important;
+            overflow: auto;
+        }
+
+        .sidebar {
+            width: 200px;
+            min-width: 80px !important;
+            max-width: 400px !important;
+            resize:horizontal;
+            display:inline-block;
+            margin: 4px;
+        }
+
+        .sidebar+.main-content {           
+            max-width: calc(100% - 80px);
+        }
+
+        .main-content {
+            background-color: brown;
+            min-height: 100% !important;
+            resize:horizontal;
+            display:inline-block;
+            margin: 4px;
+            overflow: auto;
+        }
+
+        .sidebar.active {
+            min-width: 80px !important;
+            max-width: 80px !important;
+        }
+
+        .sidebar.active+.main-content {
+            min-width: calc(100% - 80px);
+            max-width: calc(100% - 80px);
+        }
+
+
+    </style>
+</head>
+
+<body>
+        <div id="container" class="container">
+        <div id="sidebar" class="sidebar">
+            <button type="button" id="toggleBtn">ABC</button> 
+            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Velit temporibus consectetur ducimus! Voluptatem sunt corporis repellat amet cumque quidem nobis, cupiditate earum temporibus, veritatis minus totam qui doloribus illo! Alias.
+        </div> 
+        <div id="main-content" class="main-content">
+            Lorem ipsum, dolor sit amet consectetur adipisicing elit. Debitis, libero? Beatae illum quaerat distinctio! Culpa sunt asperiores quos, repudiandae consequuntur veritatis illo laudantium expedita, doloribus ipsa facilis, magnam tempora? Expedita?
+
+        </div>
+        </div>
+    
+
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script>
+        $('#toggleBtn').on('click', function () {
+            $('.sidebar').toggleClass("active");
+        })
+
+        $('#main-content').on('click', function() {
+            console.log('SIDEBAR :: ' + $('#sidebar').width());
+            console.log('MAIN CONTENT :: ' + $('.main-content').width());
+         })
+    </script>
+</body>
+
+</html>
